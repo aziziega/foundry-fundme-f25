@@ -5,29 +5,23 @@ import {Test, console} from "forge-std/Test.sol";
 import {FundMe} from "../src/FundMe.sol";
 
 contract FundMeTest is Test {
-    uint256 favNumber = 0;
-    bool greatCourse = false;
+    FundMe fundMe;
 
     function setUp() external {
-        favNumber = 1337;
-        greatCourse = true;
-        console.log("This will get printed first!");
+        fundMe = new FundMe();
     }
 
-    function testDemo() public {
-        assertEq(favNumber, 1337);
-        assertEq(greatCourse, true);
-        console.log("This will get printed second!");
-        console.log("Updraft is changing lives!");
-        console.log(
-            "You can print multiple things, for example this is a uint256, followed by a bool:",
-            favNumber,
-            greatCourse
-        );
-    }
-
-    function testMinimumDollarIsFive() public {
-        FundMe fundMe = new FundMe();
+    function testMinimumDollarIsFive() public view {
         assertEq(fundMe.MINIMUM_USD(), 5e18);
+    }
+
+    function testOwnerIsMsgSender() public view {
+        address alamatKu = address(this);
+        assertEq(fundMe.i_owner(), alamatKu);
+    }
+
+    function testPriceFeedVersionIsAccurate() public view {
+        uint256 version = fundMe.getVersion();
+        assertEq(version, 4);
     }
 }
